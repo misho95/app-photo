@@ -1,12 +1,10 @@
 import { ErrorResponse, Photos, Photo, createClient } from "pexels";
 import { useState, useEffect } from "react";
-import ImgContainer from "./img.container";
-import { useMeasure } from "@uidotdev/usehooks";
+import FlexContainer from "./flex.container";
+import TestImgContainer from "./test.img";
 
-const App = () => {
+const Test = () => {
   const [data, setData] = useState<Photos | ErrorResponse>();
-  const [containerSize, { width }] = useMeasure();
-  const [gap, setGap] = useState(0);
 
   useEffect(() => {
     const client = createClient(
@@ -20,32 +18,17 @@ const App = () => {
     });
   }, []);
 
-  const retrieveGapSize = (gap: number) => {
-    setGap(gap);
-  };
-
   if (data && "photos" in data) {
     return (
       <div className="bg-neutral-200 w-full min-h-screen overflow-hidden">
-        <div
-          ref={containerSize}
-          className="flex flex-wrap"
-          style={{ gap: gap }}
-        >
+        <FlexContainer>
           {data.photos.map((p: Photo) => {
-            return (
-              <ImgContainer
-                key={p.id}
-                data={p}
-                divWith={width}
-                retrieveGapSize={retrieveGapSize}
-              />
-            );
+            return <TestImgContainer key={p.id} data={p} />;
           })}
-        </div>
+        </FlexContainer>
       </div>
     );
   }
 };
 
-export default App;
+export default Test;
