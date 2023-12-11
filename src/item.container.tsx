@@ -1,14 +1,19 @@
-import { Photo } from "pexels";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useGetCardRow, useGetCardSize } from "./custom.hook";
-import { useContext, useEffect } from "react";
+import { ReactNode, useContext, useEffect } from "react";
 import { divWidthContext } from "./context";
 
-interface PropsType {
-  data: Photo;
+interface styleType {
+  [key: string]: string;
 }
 
-const TestImgContainer = ({ data }: PropsType) => {
+interface PropsType {
+  children: ReactNode;
+  style?: styleType;
+  tailWind?: string;
+}
+
+const ItemContainer = ({ children, style, tailWind }: PropsType) => {
   const context = useContext(divWidthContext);
   if (!context) {
     return;
@@ -18,7 +23,7 @@ const TestImgContainer = ({ data }: PropsType) => {
     width: 300,
     height: 300,
     row: useGetCardRow({ desktop: 5, tablet: 3, midMobile: 2, mobile: 1 }),
-    divSize: context.divWidth,
+    divSize: context.width,
     gap: 0,
   });
 
@@ -26,20 +31,18 @@ const TestImgContainer = ({ data }: PropsType) => {
     context.retrieveGapSize(gap);
   }, [gap]);
 
-  if (!data || !data.alt) {
-    return;
-  }
+  const mergedStyles = {
+    width,
+    height,
+    overflow: "hidden",
+    ...style,
+  };
+
   return (
-    <div className="sm:hover:scale-110 duration-200 sm:hover:z-50">
-      <img
-        src={data.src.large2x}
-        alt={data.alt}
-        loading="lazy"
-        className="object-cover object-center"
-        style={{ width, height }}
-      />
-    </div>
+    <article className={tailWind} style={mergedStyles}>
+      {children}
+    </article>
   );
 };
 
-export default TestImgContainer;
+export default ItemContainer;

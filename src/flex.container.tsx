@@ -15,10 +15,14 @@ const FlexContainer = ({ children }: PropsType) => {
   };
 
   return (
-    <divWidthContext.Provider value={{ divWidth: width, retrieveGapSize }}>
-      <div ref={containerSize} className="flex flex-wrap" style={{ gap: gap }}>
+    <divWidthContext.Provider value={{ width, retrieveGapSize }}>
+      <section
+        ref={containerSize}
+        className="flex flex-wrap"
+        style={{ gap: gap }}
+      >
         {children}
-      </div>
+      </section>
     </divWidthContext.Provider>
   );
 };

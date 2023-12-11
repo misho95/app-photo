@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 interface ContextType {
-  divWidth: number | null;
+  width: number | null;
   retrieveGapSize: (gap: number) => void;
 }
 

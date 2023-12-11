@@ -1,4 +1,5 @@
 import { useWindowSize } from "@uidotdev/usehooks";
+import { ErrorResponse, Photos, createClient } from "pexels";
 import { useEffect, useState } from "react";
 
 interface GetCardSizePropsType {
@@ -63,4 +64,35 @@ export const useGetCardRow = ({
   } else {
     return mobile;
   }
+};
+
+export const usePexelsFetch = (per_page: number, query?: string) => {
+  const [data, setData] = useState<Photos | ErrorResponse>();
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const client = createClient(
+    "EYIE9MZj9v0jqIenfIYwBfL1z8qajnG8jKB1EtpwZZZBHp5GYsBj17yr"
+  );
+
+  useEffect(() => {
+    setIsLoading(true); // Set loading to true on fetch start
+
+    let fetchPhotos;
+    if (!query) {
+      fetchPhotos = client.photos.curated({ per_page });
+    } else {
+      fetchPhotos = client.photos.search({ query, per_page });
+    }
+
+    fetchPhotos
+      .then((photos) => {
+        setData(photos);
+        setIsLoading(false); // Set loading to false on fetch completion
+      })
+      .catch((error) => {
+        setData(error);
+        setIsLoading(false); // Set loading to false on fetch error
+      });
+  }, [per_page, query]);
+
+  return { data, isLoading }; // Return both data and loading state
 };
