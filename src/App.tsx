@@ -4,13 +4,19 @@ import FlexContainer from "./flex.container";
 import { usePexelsFetch } from "./custom.hook";
 import { useEffect, useState } from "react";
 import LoadingComponent from "./loading.component";
-import { useMeasure, usePrevious, useWindowScroll } from "@uidotdev/usehooks";
+import {
+  useMeasure,
+  usePrevious,
+  useThrottle,
+  useWindowScroll,
+} from "@uidotdev/usehooks";
 import { FaArrowCircleUp } from "react-icons/fa";
 
 const App = () => {
   const [query, setQuery] = useState("");
+  const throttledQuery = useThrottle(query, 500);
   const [page, setPage] = useState<number>(1);
-  const { data, isLoading } = usePexelsFetch(25, query, page);
+  const { data, isLoading } = usePexelsFetch(25, throttledQuery, page);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [{ y }, scrollTo] = useWindowScroll();
   const prevY = usePrevious(y);
