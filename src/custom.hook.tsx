@@ -1,5 +1,5 @@
 import { usePrevious, useWindowSize } from "@uidotdev/usehooks";
-import { ErrorResponse, Photo, Photos, createClient } from "pexels";
+import { Photo, createClient } from "pexels";
 import { useEffect, useState } from "react";
 
 interface GetCardSizePropsType {
