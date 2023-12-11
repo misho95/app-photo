@@ -2,11 +2,16 @@ import { useMeasure } from "@uidotdev/usehooks";
 import { ReactNode, useState } from "react";
 import { divWidthContext } from "./context";
 
-interface PropsType {
-  children: ReactNode;
+interface styleType {
+  [key: string]: string;
 }
 
-const FlexContainer = ({ children }: PropsType) => {
+interface PropsType {
+  children: ReactNode;
+  style?: styleType;
+}
+
+const FlexContainer = ({ children, style }: PropsType) => {
   const [containerSize, { width }] = useMeasure();
   const [gap, setGap] = useState(0);
 
@@ -14,13 +19,22 @@ const FlexContainer = ({ children }: PropsType) => {
     setGap(gap);
   };
 
+  type MyCustomType = {
+    gap: number;
+    display: string;
+    flexWrap: "nowrap" | "wrap" | "wrap-reverse";
+  };
+
+  const mergedStyles: MyCustomType = {
+    gap: gap,
+    display: "flex",
+    flexWrap: "wrap",
+    ...style,
+  };
+
   return (
     <divWidthContext.Provider value={{ width, retrieveGapSize }}>
-      <section
-        ref={containerSize}
-        className="flex flex-wrap"
-        style={{ gap: gap }}
-      >
+      <section ref={containerSize} style={{ ...mergedStyles }}>
         {children}
       </section>
     </divWidthContext.Provider>

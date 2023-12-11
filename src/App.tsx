@@ -22,6 +22,23 @@ const App = () => {
   const prevY = usePrevious(y);
   const [contentRef, { height }] = useMeasure();
 
+  const resetPage = () => {
+    if (query !== "" || page > 1) {
+      setPhotos([]);
+    }
+    if (page > 1) {
+      setPage(1);
+    }
+    setQuery("");
+  };
+
+  const handleChangeQuery = (value: string) => {
+    if (value === " ") {
+      return;
+    }
+    setQuery(value);
+  };
+
   useEffect(() => {
     const uniqueIds = new Set(photos.map((photo) => photo.id));
     const newPhotos = data.filter((photo) => !uniqueIds.has(photo.id));
@@ -71,11 +88,7 @@ const App = () => {
       >
         <header className="p-[20px] mb-[10px] flex justify-between items-center gap-[10px]">
           <h3
-            onClick={() => {
-              {
-                setQuery(""), setPage(1);
-              }
-            }}
+            onClick={resetPage}
             className="text-[20px] sm:text-[35px] select-none cursor-pointer w-fit text-center font-mono"
           >
             PEXEL GALLERY
@@ -87,9 +100,9 @@ const App = () => {
               placeholder="search..."
               value={query}
               onChange={(e) => {
-                setQuery(e.target.value);
+                handleChangeQuery(e.target.value);
               }}
-              className="w-full h-[30px] sm:h-[40px] rounded-2xl p-[10px] bg-neutral-800 text-white focus:outline-none"
+              className="w-full h-[30px] sm:h-[40px] rounded-2xl p-[10px] bg-neutral-800 text-white opacity-90 focus:outline-none focus:opacity-100"
             />
           </label>
         </header>
