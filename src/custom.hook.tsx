@@ -1,5 +1,5 @@
-import { useWindowSize } from "@uidotdev/usehooks";
-import { ErrorResponse, Photos, createClient } from "pexels";
+import { usePrevious, useWindowSize } from "@uidotdev/usehooks";
+import { ErrorResponse, Photo, Photos, createClient } from "pexels";
 import { useEffect, useState } from "react";
 
 interface GetCardSizePropsType {
@@ -66,33 +66,48 @@ export const useGetCardRow = ({
   }
 };
 
-export const usePexelsFetch = (per_page: number, query?: string) => {
-  const [data, setData] = useState<Photos | ErrorResponse>();
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+export const usePexelsFetch = (
+  per_page: number,
+  query?: string,
+  page?: number
+) => {
+  const [data, setData] = useState<Photo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const prevQuery = usePrevious(query);
   const client = createClient(
     "EYIE9MZj9v0jqIenfIYwBfL1z8qajnG8jKB1EtpwZZZBHp5GYsBj17yr"
   );
 
-  useEffect(() => {
-    setIsLoading(true); // Set loading to true on fetch start
+  const fetchMoreData = () => {
+    setIsLoading(true);
+    if (query && prevQuery !== query) {
+      setData([]);
+    }
 
     let fetchPhotos;
     if (!query) {
-      fetchPhotos = client.photos.curated({ per_page });
+      fetchPhotos = client.photos.curated({ per_page, page });
     } else {
-      fetchPhotos = client.photos.search({ query, per_page });
+      fetchPhotos = client.photos.search({ query, per_page, page });
     }
 
     fetchPhotos
-      .then((photos) => {
-        setData(photos);
-        setIsLoading(false); // Set loading to false on fetch completion
+      .then((res) => {
+        if ("photos" in res) {
+          setData(res.photos);
+          setIsLoading(false);
+          return;
+        }
       })
       .catch((error) => {
         setData(error);
-        setIsLoading(false); // Set loading to false on fetch error
+        setIsLoading(false);
       });
-  }, [per_page, query]);
+  };
 
-  return { data, isLoading }; // Return both data and loading state
+  useEffect(() => {
+    fetchMoreData();
+  }, [per_page, query, page]);
+
+  return { data, isLoading };
 };

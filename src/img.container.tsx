@@ -10,7 +10,7 @@ const ImgContainer = ({ data }: PropsType) => {
     return;
   }
   return (
-    <ItemContainer tailWind={"sm:hover:scale-110 duration-200 sm:hover:z-50"}>
+    <ItemContainer tailWind={"sm:hover:scale-110 duration-200 sm:hover:z-30"}>
       <img
         src={data.src.large2x}
         alt={data.alt}

@@ -2,22 +2,75 @@ import { Photo } from "pexels";
 import ImgContainer from "./img.container";
 import FlexContainer from "./flex.container";
 import { usePexelsFetch } from "./custom.hook";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingComponent from "./loading.component";
+import { useMeasure, usePrevious, useWindowScroll } from "@uidotdev/usehooks";
+import { FaArrowCircleUp } from "react-icons/fa";
 
 const App = () => {
   const [query, setQuery] = useState("");
-  const { data, isLoading } = usePexelsFetch(query ? 25 : 27, query);
+  const [page, setPage] = useState<number>(1);
+  const { data, isLoading } = usePexelsFetch(25, query, page);
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [{ y }, scrollTo] = useWindowScroll();
+  const prevY = usePrevious(y);
+  const [contentRef, { height }] = useMeasure();
 
-  if (data && "photos" in data) {
-    return (
-      <div className="bg-neutral-200 w-full min-h-screen flex flex-col overflow-hidden">
+  useEffect(() => {
+    const uniqueIds = new Set(photos.map((photo) => photo.id));
+    const newPhotos = data.filter((photo) => !uniqueIds.has(photo.id));
+
+    if (newPhotos.length > 0) {
+      setPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (y === 0 && !isLoading) {
+      scrollTo({ left: 0, top: prevY, behavior: "smooth" });
+    }
+  }, [height]);
+
+  useEffect(() => {
+    const position = window.innerHeight + window.scrollY;
+    const bottom = document.documentElement.offsetHeight;
+    if (position === bottom) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  }, [y]);
+
+  useEffect(() => {
+    setPhotos([]);
+    setPage(1);
+  }, [query]);
+
+  if (!photos) {
+    return <LoadingComponent />;
+  }
+
+  return (
+    <>
+      {isLoading && <LoadingComponent />}
+      <button
+        onClick={() => {
+          scrollTo({ left: 0, top: 0, behavior: "smooth" });
+        }}
+        className="fixed bottom-[10px] right-[10px] z-50 border-[1px] border-neutral-200 p-[5px] rounded-full bg-neutral-800 sm:hover:scale-110 duration-200"
+      >
+        <FaArrowCircleUp className={"text-neutral-200 w-[20px] h-[20px] "} />
+      </button>
+      <div
+        ref={contentRef}
+        className="bg-neutral-200 w-full min-h-screen flex flex-col overflow-hidden"
+      >
         <header className="p-[20px] mb-[10px] flex justify-between items-center gap-[10px]">
           <h3
             onClick={() => {
-              setQuery("");
+              {
+                setQuery(""), setPage(1);
+              }
             }}
-            className="text-[25px] sm:text-[35px] select-none cursor-pointer w-fit text-center"
+            className="text-[25px] sm:text-[35px] select-none cursor-pointer w-fit text-center font-mono"
           >
             PEXEL GALLERY
           </h3>
@@ -30,22 +83,19 @@ const App = () => {
               onChange={(e) => {
                 setQuery(e.target.value);
               }}
-              className="w-full h-[40px] rounded-2xl p-[10px] bg-neutral-800 text-white"
+              className="w-full h-[40px] rounded-2xl p-[10px] bg-neutral-800 text-white focus:outline-none"
             />
           </label>
         </header>
-        {isLoading ? (
-          <LoadingComponent />
-        ) : (
-          <FlexContainer>
-            {data.photos.map((p: Photo) => {
-              return <ImgContainer key={p.id} data={p} />;
-            })}
-          </FlexContainer>
-        )}
+
+        <FlexContainer>
+          {photos.map((p: Photo) => {
+            return <ImgContainer key={p.id} data={p} />;
+          })}
+        </FlexContainer>
       </div>
-    );
-  }
+    </>
+  );
 };
 
 export default App;
