@@ -2,6 +2,7 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import { useGetCardRow, useGetCardSize } from "../../utils/custom.hook";
 import { ReactNode, useContext, useEffect } from "react";
 import { divWidthContext } from "../../utils/context";
+import React from "react";
 
 interface styleType {
   [key: string]: string;
@@ -13,7 +14,7 @@ interface PropsType {
   tailWind?: string;
 }
 
-const ItemContainer = ({ children, style, tailWind }: PropsType) => {
+const MemoizedItemContainer = ({ children, style, tailWind }: PropsType) => {
   const context = useContext(divWidthContext);
   if (!context) {
     return;
@@ -45,4 +46,4 @@ const ItemContainer = ({ children, style, tailWind }: PropsType) => {
   );
 };
 
-export default ItemContainer;
+export const ItemContainer = React.memo(MemoizedItemContainer);

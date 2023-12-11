@@ -1,6 +1,6 @@
 import { Photo } from "pexels";
-import ImgContainer from "./components/img.container";
-import FlexContainer from "./components/reusable/flex.container";
+import { ImgContainer } from "./components/img.container";
+import { FlexContainer } from "./components/reusable/flex.container";
 import { usePexelsFetch } from "./utils/custom.hook";
 import { useEffect, useState } from "react";
 import LoadingComponent from "./components/loading.component";
@@ -14,8 +14,8 @@ import { FaArrowCircleUp } from "react-icons/fa";
 
 const App = () => {
   const [query, setQuery] = useState("");
-  const throttledQuery = useThrottle(query, 500);
-  const [page, setPage] = useState<number>(1);
+  const throttledQuery = useThrottle(query, 800);
+  const [page, setPage] = useState<number>(0);
   const { data, isLoading } = usePexelsFetch(25, throttledQuery, page);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [{ y }, scrollTo] = useWindowScroll();
@@ -23,11 +23,11 @@ const App = () => {
   const [contentRef, { height }] = useMeasure();
 
   const resetPage = () => {
-    if (query !== "" || page > 1) {
+    if (query !== "" || page > 0) {
       setPhotos([]);
     }
-    if (page > 1) {
-      setPage(1);
+    if (page > 0) {
+      setPage(0);
     }
     setQuery("");
   };
@@ -64,7 +64,7 @@ const App = () => {
 
   useEffect(() => {
     setPhotos([]);
-    setPage(1);
+    setPage(0);
   }, [query]);
 
   if (!photos) {

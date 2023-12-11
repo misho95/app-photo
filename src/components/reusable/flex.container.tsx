@@ -1,6 +1,7 @@
 import { useMeasure } from "@uidotdev/usehooks";
 import { ReactNode, useState } from "react";
 import { divWidthContext } from "../../utils/context";
+import React from "react";
 
 interface styleType {
   [key: string]: string;
@@ -11,7 +12,7 @@ interface PropsType {
   style?: styleType;
 }
 
-const FlexContainer = ({ children, style }: PropsType) => {
+const MemoizedFlexContainer = ({ children, style }: PropsType) => {
   const [containerSize, { width }] = useMeasure();
   const [gap, setGap] = useState(0);
 
@@ -41,4 +42,4 @@ const FlexContainer = ({ children, style }: PropsType) => {
   );
 };
 
-export default FlexContainer;
+export const FlexContainer = React.memo(MemoizedFlexContainer);

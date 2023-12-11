@@ -1,6 +1,6 @@
 import { usePrevious, useWindowSize } from "@uidotdev/usehooks";
 import { Photo, createClient } from "pexels";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface GetCardSizePropsType {
   width: number;
@@ -17,12 +17,9 @@ export const useGetCardSize = ({
   divSize,
   gap,
 }: GetCardSizePropsType) => {
-  const [cardWidth, setCardWidth] = useState<number>(0);
-  const [cardHeight, setCardHeight] = useState<number>(0);
-
-  useEffect(() => {
+  const calculatedSize = useMemo(() => {
     if (!divSize) {
-      return;
+      return { width: 0, height: 0 };
     }
     const aspectRatio = width / height;
     const totalGapWidth = gap * (row - 1);
@@ -34,9 +31,10 @@ export const useGetCardSize = ({
     const customWidth = baseWidth + Math.floor(remainder / row);
     const customHeight = Math.floor(customWidth / aspectRatio);
 
-    setCardWidth(customWidth);
-    setCardHeight(customHeight);
+    return { width: customWidth, height: customHeight };
   }, [width, height, divSize, row, gap]);
+
+  const { width: cardWidth, height: cardHeight } = calculatedSize;
 
   return { width: cardWidth, height: cardHeight, gap: gap };
 };
@@ -55,15 +53,19 @@ export const useGetCardRow = ({
 }: useGetCardRowPropsType) => {
   const windowSize = useWindowSize();
 
-  if (windowSize.width && windowSize.width > 1364) {
-    return desktop;
-  } else if (windowSize.width && windowSize.width > 726) {
-    return tablet;
-  } else if (windowSize.width && windowSize.width > 400) {
-    return midMobile;
-  } else {
-    return mobile;
-  }
+  const cardRow = useMemo(() => {
+    if (windowSize.width && windowSize.width > 1364) {
+      return desktop;
+    } else if (windowSize.width && windowSize.width > 726) {
+      return tablet;
+    } else if (windowSize.width && windowSize.width > 400) {
+      return midMobile;
+    } else {
+      return mobile;
+    }
+  }, [windowSize, desktop, tablet, midMobile, mobile]);
+
+  return cardRow;
 };
 
 export const usePexelsFetch = (
@@ -78,7 +80,7 @@ export const usePexelsFetch = (
     "EYIE9MZj9v0jqIenfIYwBfL1z8qajnG8jKB1EtpwZZZBHp5GYsBj17yr"
   );
 
-  const fetchMoreData = () => {
+  const fetchMoreData = useCallback(() => {
     setIsLoading(true);
     if (query && prevQuery !== query) {
       setData([]);
@@ -103,7 +105,7 @@ export const usePexelsFetch = (
         setData(error);
         setIsLoading(false);
       });
-  };
+  }, [client.photos, per_page, query, prevQuery, page]);
 
   useEffect(() => {
     fetchMoreData();

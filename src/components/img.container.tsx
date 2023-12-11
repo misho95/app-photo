@@ -1,13 +1,14 @@
 import { Photo } from "pexels";
-import ItemContainer from "./reusable/item.container";
+import { ItemContainer } from "./reusable/item.container";
 import { useIntersectionObserver } from "@uidotdev/usehooks";
 import { useState } from "react";
+import React from "react";
 
 interface PropsType {
   data: Photo;
 }
 
-const ImgContainer = ({ data }: PropsType) => {
+const MemoizedImgContainer = ({ data }: PropsType) => {
   if (!data || !data.alt) {
     return;
   }
@@ -70,4 +71,4 @@ const ImgContainer = ({ data }: PropsType) => {
   );
 };
 
-export default ImgContainer;
+export const ImgContainer = React.memo(MemoizedImgContainer);
