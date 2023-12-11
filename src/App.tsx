@@ -3,6 +3,7 @@ import ImgContainer from "./img.container";
 import FlexContainer from "./flex.container";
 import { usePexelsFetch } from "./custom.hook";
 import { useState } from "react";
+import LoadingComponent from "./loading.component";
 
 const App = () => {
   const [query, setQuery] = useState("");
@@ -34,7 +35,7 @@ const App = () => {
           </label>
         </header>
         {isLoading ? (
-          "loading..."
+          <LoadingComponent />
         ) : (
           <FlexContainer>
             {data.photos.map((p: Photo) => {
