@@ -70,7 +70,7 @@ const App = () => {
                 setQuery(""), setPage(1);
               }
             }}
-            className="text-[25px] sm:text-[35px] select-none cursor-pointer w-fit text-center font-mono"
+            className="text-[20px] sm:text-[35px] select-none cursor-pointer w-fit text-center font-mono"
           >
             PEXEL GALLERY
           </h3>
@@ -83,7 +83,7 @@ const App = () => {
               onChange={(e) => {
                 setQuery(e.target.value);
               }}
-              className="w-full h-[40px] rounded-2xl p-[10px] bg-neutral-800 text-white focus:outline-none"
+              className="w-full h-[30px] sm:h-[40px] rounded-2xl p-[10px] bg-neutral-800 text-white focus:outline-none"
             />
           </label>
         </header>
