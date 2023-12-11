@@ -1,4 +1,4 @@
-import Load from "./assets/loading.svg";
+import Load from "../assets/loading.svg";
 
 const LoadingComponent = () => {
   return (

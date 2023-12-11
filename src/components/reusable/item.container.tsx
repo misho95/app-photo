@@ -1,7 +1,7 @@
 import "react-lazy-load-image-component/src/effects/blur.css";
-import { useGetCardRow, useGetCardSize } from "./custom.hook";
+import { useGetCardRow, useGetCardSize } from "../../utils/custom.hook";
 import { ReactNode, useContext, useEffect } from "react";
-import { divWidthContext } from "./context";
+import { divWidthContext } from "../../utils/context";
 
 interface styleType {
   [key: string]: string;

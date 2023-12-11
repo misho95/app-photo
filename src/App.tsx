@@ -1,9 +1,9 @@
 import { Photo } from "pexels";
-import ImgContainer from "./img.container";
-import FlexContainer from "./flex.container";
-import { usePexelsFetch } from "./custom.hook";
+import ImgContainer from "./components/img.container";
+import FlexContainer from "./components/reusable/flex.container";
+import { usePexelsFetch } from "./utils/custom.hook";
 import { useEffect, useState } from "react";
-import LoadingComponent from "./loading.component";
+import LoadingComponent from "./components/loading.component";
 import {
   useMeasure,
   usePrevious,

@@ -1,6 +1,6 @@
 import { useMeasure } from "@uidotdev/usehooks";
 import { ReactNode, useState } from "react";
-import { divWidthContext } from "./context";
+import { divWidthContext } from "../../utils/context";
 
 interface styleType {
   [key: string]: string;
