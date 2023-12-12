@@ -1,7 +1,7 @@
 import { Photo } from "pexels";
 import { ItemContainer } from "./reusable/item.container";
 import { useIntersectionObserver } from "@uidotdev/usehooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { dataIdLoaded, modalState } from "../utils/zustand";
 

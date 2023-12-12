@@ -4,21 +4,16 @@ import { FlexContainer } from "./components/reusable/flex.container";
 import { usePexelsFetch } from "./utils/custom.hook";
 import { useEffect, useState } from "react";
 import LoadingComponent from "./components/loading.component";
-import {
-  useMeasure,
-  usePrevious,
-  useThrottle,
-  useWindowScroll,
-} from "@uidotdev/usehooks";
+import { useMeasure, usePrevious, useWindowScroll } from "@uidotdev/usehooks";
 import { FaArrowCircleUp } from "react-icons/fa";
 import Modal from "./components/modal";
 import { modalState } from "./utils/zustand";
+import Header from "./header";
 
 const App = () => {
   const [query, setQuery] = useState("");
-  const throttledQuery = useThrottle(query, 800);
   const [page, setPage] = useState<number>(0);
-  const { data, isLoading } = usePexelsFetch(25, throttledQuery, page);
+  const { data, isLoading } = usePexelsFetch(25, query, page);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [{ y }, scrollTo] = useWindowScroll();
   const prevY = usePrevious(y);
@@ -91,26 +86,7 @@ const App = () => {
         ref={contentRef}
         className="bg-neutral-200 w-full min-h-screen flex flex-col overflow-hidden"
       >
-        <header className="p-[20px] mb-[10px] flex justify-between items-center gap-[10px]">
-          <h3
-            onClick={resetPage}
-            className="text-[20px] sm:text-[35px] select-none cursor-pointer w-fit text-center font-mono"
-          >
-            PEXEL GALLERY
-          </h3>
-
-          <label className="w-1/2">
-            <input
-              type="text"
-              placeholder="search..."
-              value={query}
-              onChange={(e) => {
-                handleChangeQuery(e.target.value);
-              }}
-              className="w-full h-[30px] sm:h-[40px] rounded-2xl p-[10px] bg-neutral-800 text-white opacity-90 focus:outline-none focus:opacity-100"
-            />
-          </label>
-        </header>
+        <Header props={{ resetPage, query, handleChangeQuery }} />
 
         <FlexContainer>
           {photos.map((p: Photo) => {
