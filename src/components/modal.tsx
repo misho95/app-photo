@@ -81,6 +81,7 @@ const Modal = () => {
           <img
             onLoad={handleLoad}
             src={photo.src[`${size}`]}
+            alt={photo.alt ? photo.alt : ""}
             className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] lg:w-[700px] lg:h-[700px] object-cover"
           />
         </div>
