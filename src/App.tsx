@@ -11,6 +11,8 @@ import {
   useWindowScroll,
 } from "@uidotdev/usehooks";
 import { FaArrowCircleUp } from "react-icons/fa";
+import Modal from "./components/modal";
+import { modalState } from "./utils/zustand";
 
 const App = () => {
   const [query, setQuery] = useState("");
@@ -21,8 +23,10 @@ const App = () => {
   const [{ y }, scrollTo] = useWindowScroll();
   const prevY = usePrevious(y);
   const [contentRef, { height }] = useMeasure();
+  const modalOpen = modalState((state) => state.open);
 
   const resetPage = () => {
+    scrollTo({ left: 0, top: 0 });
     if (query !== "" || page > 0) {
       setPhotos([]);
     }
@@ -73,12 +77,13 @@ const App = () => {
 
   return (
     <>
+      {modalOpen && <Modal />}
       {isLoading && <LoadingComponent />}
       <button
         onClick={() => {
           scrollTo({ left: 0, top: 0, behavior: "smooth" });
         }}
-        className="fixed bottom-[10px] right-[10px] z-50 border-[1px] border-neutral-200 p-[5px] rounded-full bg-neutral-800 sm:hover:scale-110 duration-200"
+        className="fixed bottom-[10px] right-[10px] z-40 border-[1px] border-neutral-200 p-[5px] rounded-full bg-neutral-800 sm:hover:scale-110 duration-200"
       >
         <FaArrowCircleUp className={"text-neutral-200 w-[20px] h-[20px] "} />
       </button>

@@ -3,6 +3,7 @@ import { ItemContainer } from "./reusable/item.container";
 import { useIntersectionObserver } from "@uidotdev/usehooks";
 import { useState } from "react";
 import React from "react";
+import { dataIdLoaded, modalState } from "../utils/zustand";
 
 interface PropsType {
   data: Photo;
@@ -19,6 +20,8 @@ const MemoizedImgContainer = ({ data }: PropsType) => {
     root: null,
     rootMargin: "0px",
   });
+  const openModal = modalState((state) => state.setOpen);
+  const setId = dataIdLoaded((state) => state.setId);
 
   const [size, changeSize] = useState<
     "small" | "medium" | "large" | "large2x" | "original"
@@ -52,6 +55,11 @@ const MemoizedImgContainer = ({ data }: PropsType) => {
     }, 500);
   };
 
+  const handleOnClick = () => {
+    openModal();
+    setId(data.id);
+  };
+
   return (
     <ItemContainer
       tailWind={load ? "sm:hover:scale-110 duration-200 sm:hover:z-30" : ""}
@@ -59,6 +67,7 @@ const MemoizedImgContainer = ({ data }: PropsType) => {
       <figure ref={ref} className="w-full h-full">
         {entry?.isIntersecting && (
           <img
+            onClick={handleOnClick}
             onLoad={handleLoad}
             src={data.src[`${size}`]}
             alt={data.alt}
